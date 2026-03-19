@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    container_name: auth-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET: "12A35A5R4R54ADSDSA21FZXCVKYILOPT9IU546A9832R5THU6J"
+      JWT_EXPIRATION: 86400000
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth
+      SPRING_DATASOURCE_USERNAME: auth
+      SPRING_DATASOURCE_PASSWORD: secret
+    depends_on:
+      postgres:
+        condition: service_started
+  postgres:
+    image: postgres:16.3
+    container_name: authdb
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
