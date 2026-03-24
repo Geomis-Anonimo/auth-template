@@ -1,56 +1,35 @@
-# Auth API
+# Auth API - Estudo de Arquiteturas
 
-Esta é uma API de Autenticação construída com **Java 17**, **Spring Boot** e **Spring Security**, oferecendo um sistema robusto de gerenciamento de usuários e controle de acesso baseado em **JWT (JSON Web Token)**.
+Este repositório contém diferentes implementações de uma API de Autenticação construída com **Java 17**, **Spring Boot** e **Spring Security**. O objetivo é servir como um laboratório para comparar padrões de organização de código e práticas de desenvolvimento.
 
-A aplicação utiliza **PostgreSQL** como banco de dados relacional e gerencia a estrutura do banco usando migrations do **Flyway**. Além disso, o ambiente está totalmente preparado para rodar em containers usando **Docker** e **Docker Compose**, o que facilita a execução do projeto com apenas um comando, sem necessidade de instalar bancos de dados localmente.
+## 📂 Arquiteturas Disponíveis
 
-## 🚀 Tecnologias Integradas
+Atualmente, o projeto está dividido em duas abordagens principais:
 
-- **Java 17** 
-- **Spring Boot 3+** (Web, Data JPA, Security, Validation)
-- **PostgreSQL**
-- **Flyway** (Migrations de Banco de Dados)
-- **JWT (jjwt)** para Autenticação Restless
-- **Lombok** (Para reduzir boilerplates de código)
+### 1. [Arquitetura Limpa (clean_arq)](./clean_arq/)
+Uma implementação seguindo os princípios de **Clean Architecture**, focada em manter as regras de negócio desacopladas de frameworks e detalhes de infraestrutura (como banco de dados e APIs externas).
+
+- **Principais Pastas:** `domain`, `application`, `infra`.
+- **Ideal para:** Sistemas complexos que precisam de testes de unidade robustos e flexibilidade para trocar componentes de infra sem afetar o core.
+
+### 2. [Arquitetura em Camadas (modularizado)](./modularizado/)
+Uma implementação seguindo o padrão tradicional **Layered Architecture** (Camadas), que é o padrão "de fato" em muitos projetos Spring Boot devido à sua simplicidade e agilidade de desenvolvimento.
+
+- **Principais Pastas:** `controller`, `service`, `repository`, `model`.
+- **Ideal para:** MVPs e aplicações de pequeno a médio porte onde a velocidade de entrega é prioridade.
+
+---
+
+## � Tecnologias Utilizadas
+Em ambas as versões, as tecnologias core são as mesmas:
+- **Java 17**
+- **Spring Boot 3+**
+- **Spring Security (JWT)**
+- **PostgreSQL / Flyway**
 - **Docker & Docker Compose**
 
-## 📂 Estrutura e Práticas
-- **Banco de Dados Seguro:** O projeto não usa `ddl-auto: update` cegamente em produção. Utilizamos instâncias limpas do banco populadas diretamente pelo **Flyway** na subida do container, assegurando confiabilidade.
-- **Autenticação:** Tokens JWT são gerados e validados por requisição usando as arquiteturas internas recomendadas pelo Spring Security.
+## � Como Rodar
+Cada pasta possui seu próprio ambiente isolado. Para instruções detalhadas de como executar cada versão, acesse o `README.md` dentro de sua respectiva pasta:
 
-## 🛠 Pré-requisitos
-Certifique-se de ter instalado em sua máquina:
-- **Docker** e o **Docker Compose**
-- *(Opcional)* Java 17 e Maven (caso queira executar a aplicação sem o Docker usando uma IDE)
-
-## 🏃 Como rodar o projeto
-
-Todo o ambiente (inclusive o banco de dados) foi configurado no `compose.yaml`. Siga os passos:
-
-1. Clone este repositório:
-```bash
-git clone <URL_DO_SEU_REPOSITORIO>
-cd auth
-```
-
-2. Suba a aplicação e o banco em plano de fundo:
-```bash
-docker compose up -d --build
-```
-> O comando de build inicial pode levar alguns segundos, pois ele baixará a imagem do Maven e fará a instalação de todas as dependências do `pom.xml`.
-
-3. A aplicação estará disponível na porta `8080` (A porta local do Postgres estará mapeada pra `5433` no seu host local se precisar se conectar via DBeaver / pgAdmin).
-
-## 🗄 Modelo do Banco (Migrations)
-A estrutura das tabelas é definida através dos arquivos `.sql` localizados em `src/main/resources/db/migration/`. O Flyway lerá esses arquivos durante a inicialização para construir o esquema antes mesmo do Spring Data mapeá-los.
-
-## 🛑 Parando a aplicação
-Para parar os containers sem perder os dados armazenados:
-```bash
-docker compose stop
-```
-
-Para parar os containers deletando toda a rede criada (atenção, o banco mantem persistência por causa do uso flexível de Volumes gerados pelo Postgres, porém rodar com prunes adicionais apaga dados locais):
-```bash
-docker compose down
-```
+- [Instruções para clean_arq](./clean_arq/README.md)
+- [Instruções para modularizado](./modularizado/README.md)
